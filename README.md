@@ -6,7 +6,7 @@ A garish coloured and extremely simple logger. The best kind.
 
 ```toml
 [dependencies]
-badlog = "0.1"
+badlog = "0.1.1"
 log = "0.3"
 ```
 
