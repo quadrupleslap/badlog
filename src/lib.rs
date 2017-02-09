@@ -5,10 +5,13 @@ extern crate env_logger;
 use ansi_term::Colour::*;
 use env_logger::LogBuilder;
 use log::LogLevel::*;
+use log::LogLevelFilter;
 use std::env;
 
 pub fn init(envar: &'static str) {
     let mut builder = LogBuilder::new();
+
+    builder.filter(None, LogLevelFilter::Info);
 
     builder.format(|record| {
         format!("{} {}", match record.level() {
