@@ -17,7 +17,7 @@ log = "0.3"
 extern crate badlog;
 
 fn main() {
-    badlog::init();
+    badlog::init("LOG_LEVEL");
 
     trace!("Unimportant details.");
     debug!("Debugging information.");

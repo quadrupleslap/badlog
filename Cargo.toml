@@ -1,6 +1,8 @@
 [package]
 name = "badlog"
 version = "0.1.0"
+description = "A simple zero customization, colored logger."
+license = "MIT"
 authors = ["Ram Kaniyur <quadrupleslap@gmail.com>"]
 
 [dependencies]
