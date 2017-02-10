@@ -8,7 +8,7 @@ use log::LogLevel::*;
 use log::LogLevelFilter;
 use std::env;
 
-pub fn init(envar: &'static str) {
+pub fn init(envar: &str) {
     let mut builder = LogBuilder::new();
 
     builder.filter(None, LogLevelFilter::Info);
