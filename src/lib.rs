@@ -52,7 +52,7 @@ fn ansi_supported() -> bool {
 #[cfg(not(windows))]
 fn ansi_supported() -> bool {
     let isatty = unsafe {
-        libc::isatty(libc::STDOUT_FILENO)
+        libc::isatty(libc::STDERR_FILENO)
     };
 
     isatty != 0
