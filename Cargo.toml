@@ -7,6 +7,7 @@ repository = "https://github.com/quadrupleslap/badlog"
 authors = ["Ram Kaniyur <quadrupleslap@gmail.com>"]
 
 [dependencies]
-env_logger = "0.4.0"
-log = "0.3"
 ansi_term = "0.9"
+env_logger = "0.4.0"
+libc = "0.2"
+log = "0.3"
