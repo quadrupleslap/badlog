@@ -9,7 +9,7 @@ use log::LogLevel::*;
 use log::LogLevelFilter;
 use std::env;
 
-pub fn init(envar: &str) {
+pub fn init<T: AsRef<str>>(level: Option<T>) {
     let mut builder = LogBuilder::new();
 
     builder.filter(None, LogLevelFilter::Info);
@@ -36,11 +36,15 @@ pub fn init(envar: &str) {
         });
     }
 
-    if let Ok(var) = env::var(envar) {
-       builder.parse(&var);
+    if let Some(level) = level {
+       builder.parse(level.as_ref());
     }
 
     builder.init().unwrap();
+}
+
+pub fn init_from_env(envar: &str) {
+    init(env::var(envar).ok());
 }
 
 #[cfg(windows)] 

@@ -10,6 +10,10 @@ badlog = "0.1.3"
 log = "0.3"
 ```
 
+## Documentation
+
+Just read `src/lib.rs`. It's really short, I promise!
+
 ## Usage
 
 ```rust
@@ -17,7 +21,7 @@ log = "0.3"
 extern crate badlog;
 
 fn main() {
-    badlog::init("LOG_LEVEL");
+    badlog::init_from_env("LOG_LEVEL");
 
     trace!("Unimportant details.");
     debug!("Debugging information.");
