@@ -1,7 +1,7 @@
 [package]
 name = "badlog"
 version = "0.2.3"
-description = "A simple zero customization, colored logger."
+description = "A simple, zero customization, colored logger."
 license = "MIT"
 repository = "https://github.com/quadrupleslap/badlog"
 authors = ["Ram Kaniyur <quadrupleslap@gmail.com>"]
