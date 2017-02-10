@@ -1,6 +1,6 @@
 # badlog
 
-A garish coloured and extremely simple logger. The best kind.
+A garishly colored and extremely simple logger - the best kind.
 
 ## Installation
 
