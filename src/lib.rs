@@ -2,6 +2,7 @@ extern crate ansi_term;
 extern crate env_logger;
 extern crate libc;
 extern crate log;
+extern crate time;
 
 use ansi_term::Colour::*;
 use env_logger::LogBuilder;
@@ -14,27 +15,35 @@ pub fn init<T: AsRef<str>>(level: Option<T>) {
 
     builder.filter(None, LogLevelFilter::Info);
 
-    if ansi_supported() {
-        builder.format(|record| {
-            format!("{} {}", match record.level() {
-                Error =>    Red.paint("[ERROR]"),
-                Warn  => Yellow.paint(" [WARN]"),
-                Info  =>   Cyan.paint(" [INFO]"),
-                Debug =>  Green.paint("[DEBUG]"),
-                Trace => Purple.paint("[TRACE]"),
-            }, record.args())
-        });
-    } else {
-        builder.format(|record| {
-            format!("{} {}", match record.level() {
-                Error => "[ERROR]",
-                Warn  => " [WARN]",
-                Info  => " [INFO]",
-                Debug => "[DEBUG]",
-                Trace => "[TRACE]",
-            }, record.args())
-        });
-    }
+    let (error, warn, info, debug, trace) =
+        if ansi_supported() {(
+            Fixed( 9).paint("[ERROR]").to_string(),
+            Fixed(11).paint("[WARN] ").to_string(),
+            Fixed(14).paint("[INFO] ").to_string(),
+            Fixed(10).paint("[DEBUG]").to_string(),
+            Fixed(13).paint("[TRACE]").to_string()
+        )} else {(
+            "[ERROR]".to_owned(),
+            "[WARN] ".to_owned(),
+            "[INFO] ".to_owned(),
+            "[DEBUG]".to_owned(),
+            "[TRACE]".to_owned()
+        )};
+
+    builder.format(move |record| {
+        format!("{} {} {} {}",
+            Fixed(8).paint(time::now().strftime("%H:%M:%S").unwrap().to_string()),
+            match record.level() {
+                Error => &error,
+                Warn  => &warn,
+                Info  => &info,
+                Debug => &debug,
+                Trace => &trace
+            },
+            Fixed(8).paint(format!("[{}]", record.target())),
+            record.args()
+        )
+    });
 
     if let Some(level) = level {
        builder.parse(level.as_ref());
