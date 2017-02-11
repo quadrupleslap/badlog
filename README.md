@@ -2,6 +2,8 @@
 
 A garishly colored and extremely simple logger - the best kind.
 
+![](preview.png)
+
 ## Installation
 
 ```toml
