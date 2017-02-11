@@ -17,11 +17,11 @@ pub fn init<T: AsRef<str>>(level: Option<T>) {
 
     let (error, warn, info, debug, trace) =
         if ansi_supported() {(
-            Fixed( 9).paint("[ERROR]").to_string(),
-            Fixed(11).paint("[WARN] ").to_string(),
-            Fixed(14).paint("[INFO] ").to_string(),
-            Fixed(10).paint("[DEBUG]").to_string(),
-            Fixed(13).paint("[TRACE]").to_string()
+               Red.paint("[ERROR]").to_string(),
+            Yellow.paint("[WARN] ").to_string(),
+              Cyan.paint("[INFO] ").to_string(),
+             Green.paint("[DEBUG]").to_string(),
+            Purple.paint("[TRACE]").to_string()
         )} else {(
             "[ERROR]".to_owned(),
             "[WARN] ".to_owned(),
