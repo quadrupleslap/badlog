@@ -14,9 +14,16 @@ log = "0.3"
 
 ## Documentation
 
-Just read `src/lib.rs`. It's really short, I promise!
+You have two initializers:
 
-## Usage
+```rust
+fn init_from_env(envar: &str);
+fn init<T: AsRef<str>>(level: Option<T>);
+```
+
+And from there it's just [the standard log crate macros](https://doc.rust-lang.org/log/log/index.html)!
+
+## Example
 
 ```rust
 #[macro_use] extern crate log;
