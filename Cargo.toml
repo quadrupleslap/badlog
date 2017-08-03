@@ -1,6 +1,6 @@
 [package]
 name = "badlog"
-version = "0.2.5"
+version = "0.3.0"
 description = "A simple, zero customization, colored logger."
 keywords = ["simple", "log", "logging", "logger", "color"]
 license = "MIT"
@@ -9,7 +9,7 @@ authors = ["Ram Kaniyur <quadrupleslap@gmail.com>"]
 
 [dependencies]
 ansi_term = "0.9"
-env_logger = "0.4.0"
+env_logger = "0.4"
 libc = "0.2"
 log = "0.3"
 time = "0.1"

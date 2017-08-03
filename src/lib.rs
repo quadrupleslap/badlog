@@ -4,11 +4,14 @@ extern crate libc;
 extern crate log;
 extern crate time;
 
+use ansi_term::Colour;
 use ansi_term::Colour::*;
 use env_logger::LogBuilder;
 use log::LogLevel::*;
 use log::LogLevelFilter;
 use std::env;
+
+const DETAILS_COLOR: Colour = Fixed(8);
 
 pub fn init<T: AsRef<str>>(level: Option<T>) {
     let mut builder = LogBuilder::new();
@@ -17,22 +20,27 @@ pub fn init<T: AsRef<str>>(level: Option<T>) {
 
     let (error, warn, info, debug, trace) =
         if ansi_supported() {(
-               Red.paint("[ERROR]").to_string(),
-            Yellow.paint("[WARN] ").to_string(),
-              Cyan.paint("[INFO] ").to_string(),
-             Green.paint("[DEBUG]").to_string(),
-            Purple.paint("[TRACE]").to_string()
+               Red.paint("[ERROR]"),
+            Yellow.paint("[WARN] "),
+              Cyan.paint("[INFO] "),
+             Green.paint("[DEBUG]"),
+            Purple.paint("[TRACE]")
         )} else {(
-            "[ERROR]".to_owned(),
-            "[WARN] ".to_owned(),
-            "[INFO] ".to_owned(),
-            "[DEBUG]".to_owned(),
-            "[TRACE]".to_owned()
+            "[ERROR]".into(),
+            "[WARN] ".into(),
+            "[INFO] ".into(),
+            "[DEBUG]".into(),
+            "[TRACE]".into()
         )};
 
     builder.format(move |record| {
-        format!("{} {} {} {}",
-            Fixed(8).paint(time::now().strftime("%H:%M:%S").unwrap().to_string()),
+        format!("{}{}{} {} {}[{}]{} {}",
+            DETAILS_COLOR.prefix(),
+            time::now()
+                .strftime("%H:%M:%S")
+                .unwrap(),
+            DETAILS_COLOR.suffix(),
+
             match record.level() {
                 Error => &error,
                 Warn  => &warn,
@@ -40,7 +48,11 @@ pub fn init<T: AsRef<str>>(level: Option<T>) {
                 Debug => &debug,
                 Trace => &trace
             },
-            Fixed(8).paint(format!("[{}]", record.target())),
+
+            DETAILS_COLOR.prefix(),
+            record.target(),
+            DETAILS_COLOR.suffix(),
+
             record.args()
         )
     });
@@ -52,21 +64,18 @@ pub fn init<T: AsRef<str>>(level: Option<T>) {
     builder.init().unwrap();
 }
 
-pub fn init_from_env(envar: &str) {
-    init(env::var(envar).ok());
+pub fn init_from_env<T: AsRef<str>>(envar: T) {
+    init(env::var(envar.as_ref()).ok());
 }
 
 #[cfg(windows)] 
 fn ansi_supported() -> bool {
-    //TODO: Except Windows 10 "Threshold 2".
-    false
+    ansi_term::enable_ansi_support().is_ok()
 }
 
 #[cfg(not(windows))]
 fn ansi_supported() -> bool {
-    let isatty = unsafe {
+    0 != unsafe {
         libc::isatty(libc::STDERR_FILENO)
-    };
-
-    isatty != 0
+    }
 }

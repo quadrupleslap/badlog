@@ -17,7 +17,7 @@ log = "0.3"
 You have two initializers:
 
 ```rust
-fn init_from_env(envar: &str);
+fn init_from_env<T: AsRef<str>>(envar: T);
 fn init<T: AsRef<str>>(level: Option<T>);
 ```
 
