@@ -1,5 +1,8 @@
 # badlog
 
+[![Cargo](https://img.shields.io/crates/v/badlog.svg)](https://crates.io/crates/badlog)
+[![Docs.rs](https://docs.rs/badlog/badge.svg)](https://docs.rs/badlog)
+
 A garishly colored and extremely simple logger - the best kind.
 
 ![](preview.png)
@@ -8,20 +11,15 @@ A garishly colored and extremely simple logger - the best kind.
 
 ```toml
 [dependencies]
-badlog = "0.3"
+badlog = "1.0"
 log = "0.3"
 ```
 
-## Documentation
+## Usage
 
-You have two initializers:
-
-```rust
-fn init_from_env<T: AsRef<str>>(envar: T);
-fn init<T: AsRef<str>>(level: Option<T>);
-```
-
-And from there it's just [the standard log crate macros](https://doc.rust-lang.org/log/log/index.html)!
+1. Call [one of the initializers](https://docs.rs/badlog).
+2. Use [the standard log crate macros](https://doc.rust-lang.org/log/log/index.html).
+3. That's it!
 
 ## Example
 

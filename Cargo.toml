@@ -1,6 +1,6 @@
 [package]
 name = "badlog"
-version = "0.3.1"
+version = "1.0.0"
 description = "A simple, zero customization, colored logger."
 keywords = ["simple", "log", "logging", "logger", "color"]
 license = "MIT"
