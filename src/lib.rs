@@ -70,7 +70,7 @@ pub fn init_from_env<T: AsRef<str>>(envar: T) {
 
 #[cfg(windows)] 
 fn ansi_supported() -> bool {
-    ansi_term::enable_ansi_support().is_ok()
+    false
 }
 
 #[cfg(not(windows))]
