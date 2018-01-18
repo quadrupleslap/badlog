@@ -11,8 +11,8 @@ A garishly colored and extremely simple logger - the best kind.
 
 ```toml
 [dependencies]
-badlog = "1.0"
-log = "0.3"
+badlog = "1.1"
+log = "0.4"
 ```
 
 ## Usage
