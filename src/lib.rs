@@ -2,20 +2,18 @@
 
 //! A ridiculously minimal and good-looking logger.
 
-extern crate ansi_term;
 extern crate env_logger;
 extern crate libc;
 extern crate log;
-extern crate time;
+extern crate chrono;
 
-use ansi_term::Colour;
-use ansi_term::Colour::*;
-use env_logger::LogBuilder;
-use log::LogLevel::*;
-use log::LogLevelFilter;
-use std::env;
-
-const DETAILS_COLOR: Colour = Fixed(8);
+use chrono::Local;
+use env_logger::Builder;
+use env_logger::fmt::{Color, Style, StyledValue};
+use log::{Level, LevelFilter};
+use log::Level::{Trace, Debug, Info, Warn, Error};
+use std::{env, fmt};
+use std::io::Write;
 
 /// Use the given string as the log level.
 pub fn init<T: AsRef<str>>(level: Option<T>) {
@@ -38,78 +36,59 @@ pub fn minimal_from_env<T: AsRef<str>>(envar: T) {
 }
 
 fn inner<T: AsRef<str>>(level: Option<T>, minimal: bool) {
-    let mut builder = LogBuilder::new();
+    let mut builder = Builder::new();
 
-    builder.filter(None, LogLevelFilter::Info);
+    builder.filter(None, LevelFilter::Info);
 
-    let (error, warn, info, debug, trace) =
-        if ansi_supported() {(
-               Red.paint("[ERROR]"),
-            Yellow.paint("[WARN] "),
-              Cyan.paint("[INFO] "),
-             Green.paint("[DEBUG]"),
-            Purple.paint("[TRACE]")
-        )} else {(
-            "[ERROR]".into(),
-            "[WARN] ".into(),
-            "[INFO] ".into(),
-            "[DEBUG]".into(),
-            "[TRACE]".into()
-        )};
+    if minimal {
+        builder.format(|buf, record| {
+            let mut level_style = buf.style();
+            let level = format_level(
+                &mut level_style,
+                record.level());
 
-    builder.format(move |record| {
-        if minimal {
-            format!("{} {}",
-                match record.level() {
-                    Error => &error,
-                    Warn  => &warn,
-                    Info  => &info,
-                    Debug => &debug,
-                    Trace => &trace
-                },
+            writeln!(buf, "{} {}", level, record.args())
+        });
+    } else {
+        builder.format(|buf, record| {
+            let mut level_style = buf.style();
+            let level = format_level(
+                &mut level_style,
+                record.level());
 
-                record.args()
-            )
-        } else {
-            format!("{}{}{} {} {}[{}]{} {}",
-                DETAILS_COLOR.prefix(),
-                time::now()
-                    .strftime("%H:%M:%S")
-                    .unwrap(),
-                DETAILS_COLOR.suffix(),
+            let detail_style = buf.style();
+            //TODO: Gray details.
 
-                match record.level() {
-                    Error => &error,
-                    Warn  => &warn,
-                    Info  => &info,
-                    Debug => &debug,
-                    Trace => &trace
-                },
-
-                DETAILS_COLOR.prefix(),
-                record.target(),
-                DETAILS_COLOR.suffix(),
-
-                record.args()
-            )
-        }
-    });
+            writeln!(buf, "{} {} {} {}",
+                detail_style.value(Local::now().format("%H:%M:%S")),
+                level,
+                detail_style.value(Brackets(record.target())),
+                record.args())
+        });
+    }
 
     if let Some(level) = level {
        builder.parse(level.as_ref());
     }
 
-    builder.init().unwrap();
+    builder.init();
 }
 
-#[cfg(windows)] 
-fn ansi_supported() -> bool {
-    false
+fn format_level(style: &mut Style, level: Level) -> StyledValue<&'static str> {
+    let (color, string) = match level {
+        Error => (Color::Red,     "[ERROR]"),
+        Warn  => (Color::Yellow,  "[WARN] "),
+        Info  => (Color::Cyan,    "[INFO] "),
+        Debug => (Color::Green,   "[DEBUG]"),
+        Trace => (Color::Magenta, "[TRACE]"),
+    };
+    style.set_color(color);
+    style.value(string)
 }
 
-#[cfg(not(windows))]
-fn ansi_supported() -> bool {
-    0 != unsafe {
-        libc::isatty(libc::STDERR_FILENO)
+struct Brackets<T>(T);
+impl<T: fmt::Display> fmt::Display for Brackets<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[{}]", self.0)
     }
 }
