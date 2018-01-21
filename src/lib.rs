@@ -56,8 +56,9 @@ fn inner<T: AsRef<str>>(level: Option<T>, minimal: bool) {
                 &mut level_style,
                 record.level());
 
-            let detail_style = buf.style();
-            //TODO: Gray details.
+            let mut detail_style = buf.style();
+            detail_style.set_color(Color::Black);
+            detail_style.set_intense(true);
 
             writeln!(buf, "{} {} {} {}",
                 detail_style.value(Local::now().format("%H:%M:%S")),
